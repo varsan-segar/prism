@@ -18,7 +18,7 @@ class ChatEngine:
         self.provider = provider
         self.model = model
         self.current_persona = "default"
-        self.system_promt = self.load_persona(persona=self.current_persona)
+        self.system_prompt = self.load_persona(persona=self.current_persona)
         self.sliding_window_memory = SlidingWindowMemory(max_turns=10)
         self.cost_tracker = CostTracker(self.provider, self.model)
     
@@ -73,16 +73,15 @@ class ChatEngine:
                 time.sleep(wait)
         
         print("All retry attempt failed")
-        history = history.pop()
 
-        return history
+        return None
     
     def load_persona(self, persona):
         path = Path("personas") / f"{persona}.json"
 
         if not path.exists():
             print("\nPath not exixts. Switching to default persona.")
-            return self.system_promt
+            return self.system_prompt
 
         with open(path) as f:
             data = json.load(f)
@@ -90,7 +89,7 @@ class ChatEngine:
         return data["system_prompt"]
 
     def change_persona(self, persona):
-        self.system_promt = self.load_persona(persona=persona)
+        self.system_prompt = self.load_persona(persona=persona)
         self.current_persona = persona
         print(f"\n[Persona switched to {persona}]")
 
@@ -100,15 +99,19 @@ class ChatEngine:
         history = [
             {
                 "role": "system",
-                "content": self.system_promt
+                "content": self.system_prompt
             },
             *self.sliding_window_memory.get_messages()
         ]
 
         assistant = self.api_request(history=history)
 
-        self.sliding_window_memory.add("assistant", assistant)
-    
+        if assistant:
+            self.sliding_window_memory.add("assistant", assistant)
+            self.sliding_window_memory.sliding_window()
+        else:
+            self.sliding_window_memory.message.pop()
+
     def stats(self):
         print("---Session Summary---")
         print(f"Total Turns: {self.sliding_window_memory.turns}")
