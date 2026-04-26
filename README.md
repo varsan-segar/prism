@@ -52,6 +52,7 @@ python main.py
 |---|---|
 | `<message>` | Chat with the current persona |
 | `/persona <name>` | Switch persona (`default`, `coder`, `writer`) |
+| `/clear` | Reset conversation history |
 | `/cost` | Show token usage and cost for the session |
 | `/quit` | Exit |
 
