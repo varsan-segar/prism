@@ -5,7 +5,6 @@ DEFAULT_MODEL = "gpt-4o-mini"
 
 chat = ChatEngine(provider=DEFAULT_PROVIDER, model=DEFAULT_MODEL)
 
-
 while True:
     user_input = input("\nYOU: ").strip()
 
@@ -23,6 +22,9 @@ while True:
         
         if cmd == "/persona":
             chat.change_persona(arg)
+        
+        if cmd == "/clear":
+            chat.sliding_window_memory.clear()
         
         if cmd == "/cost":
             chat.stats()

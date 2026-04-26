@@ -13,6 +13,9 @@ class SlidingWindowMemory:
     def get_messages(self):
         return self.message
     
+    def clear(self):
+        self.message.clear()
+    
     def sliding_window(self):
         if len(self.message) > self.max_messages:
             self.message = self.message[-self.max_messages:]
