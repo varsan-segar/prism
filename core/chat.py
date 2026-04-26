@@ -114,5 +114,6 @@ class ChatEngine:
 
     def stats(self):
         print("---Session Summary---")
-        print(f"Total Turns: {self.sliding_window_memory.turns}")
+        print(f"Total turns: {self.sliding_window_memory.total_turns}")
+        print(f"Dropped turns: {self.sliding_window_memory.dropped_turns}")
         self.cost_tracker.summary()
