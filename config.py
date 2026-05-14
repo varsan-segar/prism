@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 PROVIDERS = {
-    "OpenAI":{
+    "openai":{
         "api_key": os.getenv("OPENAI_API_KEY"),
         "base_url": None,
         "models": {
@@ -14,7 +14,7 @@ PROVIDERS = {
             }
         }
     },
-    "Groq":{
+    "groq":{
         "api_key": os.getenv("GROQ_API_KEY"),
         "base_url": os.getenv("GROQ_BASE_URL"),
         "models": {
