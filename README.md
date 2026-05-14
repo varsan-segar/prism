@@ -10,6 +10,7 @@ Modular CLI-first AI chat engine with streaming, persona switching, sliding-wind
 - **Personas** — switch between `default`, `coder`, and `writer` mid-session
 - **Sliding window memory** — retains the last 10 turns of context automatically
 - **Cost tracking** — tracks input/output tokens and shows cost in USD and INR
+- **Provider swapping** — switch between any LiteLLM-supported provider mid-session with `/model`
 - **Retry logic** — handles rate limits, timeouts, and connection errors gracefully
 
 ---
@@ -51,9 +52,11 @@ python main.py
 | Command | Description |
 |---|---|
 | `<message>` | Chat with the current persona |
+| `/model` | Switch provider and model mid-session |
 | `/persona <name>` | Switch persona (`default`, `coder`, `writer`) |
 | `/clear` | Reset conversation history |
 | `/cost` | Show token usage and cost for the session |
+| `/help` | Show all commands |
 | `/quit` | Exit |
 
 ---
@@ -95,6 +98,14 @@ Then switch to it at runtime with `/persona your-persona`.
 
 ## Roadmap
 
-- [ ] Groq provider support
-- [ ] `/model` command to switch models mid-session
+- [x] Streaming responses
+- [x] Persona switching
+- [x] Sliding window memory
+- [x] Provider swapping with LiteLLM
+- [x] Per-session cost tracking in USD and INR
+- [x] Retry logic
+- [ ] Persistent chat history with session management
+- [ ] RAG (Retrieval-Augmented Generation) support
 - [ ] Conversation export
+- [ ] Rich terminal UI
+- [ ] Web UI layer
