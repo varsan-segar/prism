@@ -9,7 +9,7 @@ Commands:
   /quit             Exit Prism
 """
 
-DEFAULT_PROVIDER = "OpenAI"
+DEFAULT_PROVIDER = "openai"
 DEFAULT_MODEL = "gpt-4o-mini"
 
 chat = ChatEngine(provider=DEFAULT_PROVIDER, model=DEFAULT_MODEL)
@@ -27,6 +27,12 @@ while True:
 
         if cmd == "/help":
             print(HELP_TEXT)
+        elif cmd == "/model":
+            provider = input("Enter the provider: ").strip()
+            model = input("Enter the model: ").strip()
+
+            chat.change_model(provider=provider, model=model)
+            chat.cost_tracker.change_provider(provider=provider, model=model)
         elif cmd == "/persona":
             if arg:
                 chat.change_persona(arg)
