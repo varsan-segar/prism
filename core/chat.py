@@ -1,12 +1,12 @@
 import json
 import time
 from pathlib import Path
-from openai import (
-    OpenAI,
+from litellm import (
+    completion,
     AuthenticationError,
     BadRequestError,
     APIConnectionError,
-    APITimeoutError,
+    Timeout,
     RateLimitError
 )
 from config import PROVIDERS
@@ -25,10 +25,9 @@ class ChatEngine:
     def api_request(self, history, max_retries=3):
         for attempt in range(max_retries):
             try:
-                client = OpenAI(api_key=PROVIDERS[self.provider]["api_key"], base_url=PROVIDERS[self.provider]["base_url"])
-
-                stream = client.chat.completions.create(
-                    model=self.model,
+                stream = completion(
+                    api_key=PROVIDERS[self.provider]["api_key"],
+                    model=self.provider+"/"+self.model,
                     messages=history,
                     temperature=0.7,
                     stream=True,
@@ -64,7 +63,7 @@ class ChatEngine:
             except APIConnectionError:
                 print("API Connection Error. Trying again.")
                 time.sleep(1)
-            except APITimeoutError:
+            except Timeout:
                 print("API Timeout Error. Trying again.")
                 time.sleep(2)
             except RateLimitError:
@@ -76,11 +75,17 @@ class ChatEngine:
 
         return None
     
+    def change_model(self, provider, model):
+        self.provider = provider
+        self.model = model
+        print(f"\n[Provider switched to {provider}]")
+        print(f"[Model switched to {model}]")
+    
     def load_persona(self, persona):
         path = Path("personas") / f"{persona}.json"
 
         if not path.exists():
-            print("\nPath not exixts. Switching to default persona.")
+            print("\nPersona not found. Switching to default.")
             return self.system_prompt
 
         with open(path) as f:
@@ -110,7 +115,7 @@ class ChatEngine:
             self.sliding_window_memory.add("assistant", assistant)
             self.sliding_window_memory.sliding_window()
         else:
-            self.sliding_window_memory.message.pop()
+            self.sliding_window_memory.messages.pop()
 
     def stats(self):
         print("---Session Summary---")
